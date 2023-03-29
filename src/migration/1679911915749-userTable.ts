@@ -9,10 +9,10 @@ export class userTable1679911915749 implements MigrationInterface {
             LASTNAME CHAR(30)  NOT NULL,
             EMAIL CHAR(50)  NOT NULL,
             PASSWORD CHAR(100)  NOT NULL,
-            ISVARIFIED BOOLEAN DEFAULT FALSE
+            ISVARIFIED BOOLEAN DEFAULT FALSE,
+            REFRESHTOKEN CHAR(100) ,
             );`,
     );
-    console.log('table created');
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

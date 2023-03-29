@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Res } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto, LoginUserDto, ForgotPasswordDto } from './user.dto';
@@ -6,14 +6,14 @@ import { User } from './user.entity';
 import { sign } from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 const saltOrRounds = 10;
-import { otpGenerator } from 'otp-generator';
+import emailVerify from '../auth/mail';
 
 @Injectable()
 export class UserService {
   @InjectRepository(User)
   private readonly repository: Repository<User>;
 
-  public async createUser(body: CreateUserDto): Promise<User> {
+  public async createUser(body: CreateUserDto) {
     const { firstName, lastName, email, password, confirmPassword } = body;
     const emailExists = await this.repository.findOne({
       where: { email: email },
@@ -29,7 +29,17 @@ export class UserService {
       email,
       password: hash,
     };
-    return this.repository.save(value);
+    this.repository.save(value);
+    const access_token = sign(
+      { payload: { email: value.email } },
+      process.env.JWT_SECRET,
+      { expiresIn: '2h' },
+    );
+    emailVerify(access_token, email);
+    return {
+      message: 'user registered successfully',
+      access_token: access_token,
+    };
   }
 
   public async loginUser(body: LoginUserDto) {
@@ -60,4 +70,8 @@ export class UserService {
     if (!user) throw new HttpException('email not exist', HttpStatus.NOT_FOUND);
     return user;
   }
+
+  // public async emailVerify(() request: Request) {
+  //   const jwt = request.headers.authorization.replace('Bearer ', '');
+  // }
 }

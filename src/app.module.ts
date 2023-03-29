@@ -4,7 +4,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './user/user.entity';
-import { UsersModule } from './user/user.module';
+import { UserModule } from './user/user.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   controllers: [AppController],
@@ -24,11 +25,12 @@ import { UsersModule } from './user/user.module';
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DATABASE'),
         synchronize: configService.get<boolean>('DB_SYNC'),
-        entities: [User],
+        autoLoadEntities: true,
       }),
       inject: [ConfigService],
     }),
-    UsersModule,
+    UserModule,
+    // ProductModule,
   ],
 })
 export class AppModule {}
