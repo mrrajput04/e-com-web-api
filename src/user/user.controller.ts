@@ -5,9 +5,10 @@ import {
   Inject,
   Res,
   Param,
-  ParseIntPipe,
   HttpStatus,
   Post,
+  Req,
+  Header,
 } from '@nestjs/common';
 import { CreateUserDto, LoginUserDto, ForgotPasswordDto } from './user.dto';
 import { User } from './user.entity';
