@@ -1,12 +1,13 @@
-import { Injectable, HttpException, HttpStatus, Res } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserDto, LoginUserDto, ForgotPasswordDto } from './user.dto';
-import { User } from './user.entity';
-import { sign } from 'jsonwebtoken';
+import { Response } from 'express';
+import { CreateUserDto, LoginUserDto, ForgotPasswordDto } from './dto/user.dto';
+import { User } from './entities/user.entity';
+import { sign, verify } from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 const saltOrRounds = 10;
-import emailVerify from '../auth/mail';
+import { sendVerificationEmail } from 'src/auth/emailVerify';
 
 @Injectable()
 export class UserService {
@@ -30,19 +31,20 @@ export class UserService {
       password: hash,
     };
     this.repository.save(value);
-    const access_token = sign(
+    const token = sign(
       { payload: { email: value.email } },
       process.env.JWT_SECRET,
       { expiresIn: '2h' },
     );
-    emailVerify(access_token, email);
+    await sendVerificationEmail(email, token);
     return {
-      message: 'user registered successfully',
-      access_token: access_token,
+      message: 'user registered successfully, check your email to verify',
+      access_token: token,
     };
   }
 
-  public async loginUser(body: LoginUserDto) {
+  public async loginUser(body: LoginUserDto, res: Response) {
+    console.log(body);
     const { email, password } = body;
     const user = await this.repository.findOne({ where: { email: email } });
     if (!user) {
@@ -52,6 +54,12 @@ export class UserService {
       if (password == null)
         throw new HttpException('password not found', HttpStatus.NOT_FOUND);
     }
+    if (user.isVerified == false) {
+      throw new HttpException(
+        'please verify your email',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     let token;
     if (user && (await bcrypt.compare(password, user.password))) {
       token = sign(
@@ -59,9 +67,11 @@ export class UserService {
         process.env.JWT_SECRET,
         { expiresIn: '2h' },
       );
+      console.log(token);
+      res = token;
+      // res.cookie('auth', token, { httpOnly: true });
     }
-
-    return { message: 'user login successfully', access_token: token };
+    return res;
   }
 
   public async forgetPassword(body: ForgotPasswordDto) {
@@ -71,7 +81,19 @@ export class UserService {
     return user;
   }
 
-  // public async emailVerify(() request: Request) {
-  //   const jwt = request.headers.authorization.replace('Bearer ', '');
-  // }
+  public async verifyEmail(token: any) {
+    console.log(token);
+    const accessToken = verify(token.token, process.env.JWT_SECRET);
+    if (!accessToken)
+      throw new HttpException('unauthorized', HttpStatus.UNAUTHORIZED);
+    const payload = accessToken;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    const email = payload.payload.email;
+    const user = await this.repository.findOne({ where: { email: email } });
+    if (!user) throw new HttpException('email not exist', HttpStatus.NOT_FOUND);
+    user.isVerified = true;
+    await this.repository.save(user);
+    return token;
+  }
 }

@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["ISVARIFIED"]
+  "cSpell.words": ["ISVARIFIED"],
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }
