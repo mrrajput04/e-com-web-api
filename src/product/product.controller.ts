@@ -8,8 +8,8 @@ import {
   Post,
 } from '@nestjs/common';
 
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+// import { CreateProductDto } from './dto/create-product.dto';
+// import { UpdateProductDto } from './dto/update-product.dto';
 
 import { ProductService } from './product.service';
 
@@ -22,31 +22,32 @@ export class ProductController {
     return this.productService.findAll();
   }
 
-  @Get('category/:category')
-  async findAllByCategory(@Param('category') category: string) {
-    return this.productService.findAllByCategory(category);
-  }
+  // @Get('category/:category')
+  // async findAllByCategory(@Param('category') category: string) {
+  //   return this.productService.findAllByCategory(category);
+  // }
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
     return this.productService.findOne(id);
   }
 
-  @Post()
-  async create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
-  }
+  // @Post()
+  // async create(@Body() createProductDto: CreateProductDto) {
+  //   return this.productService.create(createProductDto);
+  // }
 
-  @Patch(':id')
-  async update(
-    @Param('id') id: number,
-    @Body() updateProductDto: UpdateProductDto,
-  ) {
-    return this.productService.update(id, updateProductDto);
-  }
+  // @Patch(':id')
+  // async update(
+  //   @Param('id') id: number,
+  //   @Body() updateProductDto: UpdateProductDto,
+  // ) {
+  //   return this.productService.update(id, updateProductDto);
+  // }
 
   @Delete(':id')
   async remove(@Param('id') id: number) {
+    console.log(id, '===>>');
     return this.productService.remove(id);
   }
 }

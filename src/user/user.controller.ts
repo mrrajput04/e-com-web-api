@@ -5,10 +5,7 @@ import {
   Inject,
   Res,
   Query,
-  HttpStatus,
   Post,
-  Req,
-  Header,
 } from '@nestjs/common';
 import { access } from 'fs';
 import { Response } from 'express';
@@ -17,7 +14,9 @@ import {
   LoginUserDto,
   ForgotPasswordDto,
   emailVerifyDto,
+  ResetPasswordDto,
 } from './dto/user.dto';
+import { UpdateUserDto } from './dto/user.updateDto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
@@ -37,12 +36,8 @@ export class UserController {
   }
 
   @Post('login')
-  public loginUser(
-    @Body() body: LoginUserDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    // const data = res.cookie('access_token', body, { httpOnly: true });
-    return res;
+  public loginUser(@Body() body: LoginUserDto, @Res() res: Response) {
+    return this.service.loginUser(body, res);
   }
 
   @Post('forget-password')
@@ -50,10 +45,17 @@ export class UserController {
     return this.service.forgetPassword(body);
   }
 
+  @Post('reset-password')
+  public resetPassword(@Body() body: ResetPasswordDto) {
+    return this.service.resetPassword(body);
+  }
+
   @Get('verify:email')
-  public verifyEmail(@Query() token: emailVerifyDto): Promise<void> {
-    console.log(token);
-    return this.service.verifyEmail(token);
+  public verifyEmail(
+    @Query() token: emailVerifyDto,
+    @Res() res: Response,
+  ): Promise<void> {
+    return this.service.verifyEmail(token, res);
   }
 
   @Get('get')

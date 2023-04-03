@@ -1,20 +1,20 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Product {
+export class Products {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({ length: 150 })
+  @Column()
   title: string;
 
-  @Column()
+  @Column('simple-json', { nullable: true })
   rating: {
     overall: number;
     rating: string;
   };
 
-  @Column()
+  @Column('simple-json', { nullable: true })
   price: {
     discountPrice: number;
     actualPrice: number;
@@ -22,16 +22,16 @@ export class Product {
   };
 
   @Column()
-  imageURL: string;
-
-  @Column({ length: 500 })
-  description: string;
+  imageurl: string;
 
   @Column()
-  colorAndSizeAvailable: {
-    color: string;
-    size: string;
-  };
+  description: string;
+
+  @Column({
+    array: true,
+    default: [],
+  })
+  colorandsizeavailable: string;
 
   @Column({
     array: true,

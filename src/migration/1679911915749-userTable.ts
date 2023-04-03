@@ -3,7 +3,7 @@ export class userTable1679911915749 implements MigrationInterface {
   name: 'userTable1679911915749';
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE IF NOT EXISTS USER-DATA (
+      `CREATE TABLE IF NOT EXISTS users (
             ID SERIAL PRIMARY KEY NOT NULL,
             FIRSTNAME CHAR(30)  NOT NULL,
             LASTNAME CHAR(30)  NOT NULL,

@@ -1,4 +1,9 @@
 {
-  "cSpell.words": ["ISVARIFIED"],
+  "cSpell.words": [
+    "colorandsizeavailable",
+    "imageurl",
+    "ISVARIFIED",
+    "otptable"
+  ],
   "typescript.tsdk": "node_modules\\typescript\\lib"
 }
