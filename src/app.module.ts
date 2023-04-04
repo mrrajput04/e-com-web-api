@@ -25,6 +25,7 @@ import { ProductModule } from './product/product.module';
         database: configService.get('POSTGRES_DATABASE'),
         synchronize: configService.get<boolean>('DB_SYNC'),
         autoLoadEntities: true,
+        logging: true,
       }),
       inject: [ConfigService],
     }),

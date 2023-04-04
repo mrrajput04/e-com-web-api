@@ -7,7 +7,6 @@ import {
   Query,
   Post,
 } from '@nestjs/common';
-import { access } from 'fs';
 import { Response } from 'express';
 import {
   CreateUserDto,
@@ -61,6 +60,6 @@ export class UserController {
   @Get('get')
   findAll(@Res({ passthrough: true }) res: Response) {
     res.cookie('auth', 'token', { httpOnly: true });
-    return access;
+    return;
   }
 }

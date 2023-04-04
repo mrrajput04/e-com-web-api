@@ -51,7 +51,6 @@ export class UserService {
   }
 
   public async loginUser(body: LoginUserDto, res: Response) {
-    console.log(body);
     const { email, password } = body;
     const user = await this.repository.findOne({ where: { email: email } });
     if (!user) {

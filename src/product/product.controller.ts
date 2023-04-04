@@ -6,6 +6,11 @@ import {
   Param,
   Patch,
   Post,
+  Headers,
+  HttpException,
+  HttpStatus,
+  Req,
+  Res,
 } from '@nestjs/common';
 
 // import { CreateProductDto } from './dto/create-product.dto';
@@ -19,6 +24,9 @@ export class ProductController {
 
   @Get()
   async findAll() {
+    // @Req() Request
+    // if (!Request.cookies.auth_token)
+    //   throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     return this.productService.findAll();
   }
 
@@ -29,6 +37,9 @@ export class ProductController {
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
+    // , @Req() Request
+    // if (!Request.cookies.auth_token)
+    //   throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     return this.productService.findOne(id);
   }
 
@@ -46,8 +57,20 @@ export class ProductController {
   // }
 
   @Delete(':id')
-  async remove(@Param('id') id: number) {
+  async remove(@Param('id') id: number, @Req() Request) {
+    if (!Request.cookies.auth_token)
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     console.log(id, '===>>');
     return this.productService.remove(id);
+  }
+
+  @Post('add')
+  async create(@Body() body, @Req() Request, @Res() Response) {
+    console.log(body);
+    //     if (!Request.cookies.auth_token)
+    //     throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    Response.cookie('product', body, { httpOnly: true });
+    Response.send('data added into cart');
+    return;
   }
 }
