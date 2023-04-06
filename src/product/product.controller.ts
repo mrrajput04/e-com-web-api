@@ -64,11 +64,10 @@ export class ProductController {
     return this.productService.remove(id);
   }
 
-  @Post('add')
+  @Post('cart')
   async create(@Body() body, @Req() Request, @Res() Response) {
-    console.log(body);
-    //     if (!Request.cookies.auth_token)
-    //     throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    // if (!Request.cookies.auth_token)
+    //   throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     Response.cookie('product', body, { httpOnly: true });
     Response.send('data added into cart');
     return;

@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { ProductModule } from './product/product.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   controllers: [AppController],
@@ -25,12 +26,13 @@ import { ProductModule } from './product/product.module';
         database: configService.get('POSTGRES_DATABASE'),
         synchronize: configService.get<boolean>('DB_SYNC'),
         autoLoadEntities: true,
-        logging: true,
+        // logging: true,
       }),
       inject: [ConfigService],
     }),
     UserModule,
     ProductModule,
+    PaymentsModule,
   ],
 })
 export class AppModule {}
