@@ -8,13 +8,13 @@ export class Products {
   @Column()
   title: string;
 
-  @Column('simple-json', { nullable: true })
+  @Column({ type: 'json', nullable: true })
   rating: {
     overall: number;
     rating: string;
   };
 
-  @Column('simple-json', { nullable: true })
+  @Column({ type: 'json', nullable: true })
   price: {
     discountPrice: number;
     actualPrice: number;
@@ -27,15 +27,9 @@ export class Products {
   @Column()
   description: string;
 
-  @Column({
-    array: true,
-    default: [],
-  })
+  @Column({ type: 'json', nullable: true })
   colorandsizeavailable: string;
 
-  @Column({
-    array: true,
-    default: [],
-  })
+  @Column({ type: 'json', nullable: true })
   highlight: string;
 }
